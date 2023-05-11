@@ -33,11 +33,12 @@ void Menu() {
 		<< "(4) Вывод клиентов" << endl
 		<< "(5) Поиск клиентов по индексу" << endl
 		<< "(6) Поиск фамилии клиента по подстроке" << endl
-		<< "(7) Запись в файл" << endl
-		<< "(8) Чтение из файла" << endl
-		<< "(9) Удаление одного клиента" << endl
-		<< "(10) Удаление всех клиентов" << endl
-		<< "(11) Сортировка" << endl
+		<< "(7) Бинарный поиск (по фамилии)" << endl
+		<< "(8) Запись в файл" << endl
+		<< "(9) Чтение из файла" << endl
+		<< "(10) Удаление одного клиента" << endl
+		<< "(11) Удаление всех клиентов" << endl
+		<< "(12) Сортировка" << endl
 		<< "Ваш выбор: ";
 	cin >> _stateMenu;
 }
@@ -113,6 +114,7 @@ void Dogovor() {
 	cin >> commission;
 
 	cout << "Составлен договор между " << soisk << " и " << rabotodat << "!" << endl;
+
 	system("pause");
 	system("cls");
 	Menu();
@@ -454,6 +456,74 @@ void searchBySubstring(CLIENT Clients[], int& ClientsCount) {
 	Menu();
 }
 
+void sortClientsFunction(CLIENT Clients[], int ClientsCount) {
+	bool sorted = false;
+	while (!sorted) {
+		sorted = true;
+		for (int i = 0; i < ClientsCount - 1; i++) {
+			if (Clients[i].surname > Clients[i + 1].surname) {
+				swap(Clients[i], Clients[i + 1]);
+				sorted = false;
+			}
+		}
+	}
+}
+
+void binarySearchClient(CLIENT Clients[], int ClientsCount) {
+
+	if (ClientsCount != 0) {
+
+		string _surname;
+		cout << "Введите фамилию или название предприятия клиента : ";
+		cin >> _surname;
+
+		sortClientsFunction(Clients, ClientsCount);
+
+		int left = 0;
+		int right = ClientsCount - 1;
+
+		while (left <= right) {
+			int mid = (left + right) / 2;
+			if (Clients[mid].surname == _surname || Clients[mid].pred == _surname) {
+				if (Clients[mid].surname != "") {
+					cout << "Соискатель: \n"
+						<< "\tФИО:	" << Clients[mid].surname << " " << Clients[mid].name << " " << Clients[mid].otch << endl
+						<< "\tКваливикация:	" << Clients[mid].kval << endl
+						<< "\tПрофессия:	" << Clients[mid].prof << endl
+						<< "\tИные данные:	" << Clients[mid].other << endl;
+					system("pause");
+					system("cls");
+					Menu();
+				}
+				else {
+					cout << "Работодатель: \n"
+						<< "\tПредприятие:	" << Clients[mid].pred << endl
+						<< "\tДеятельность:	" << Clients[mid].d << endl
+						<< "\tАдрес:	" << Clients[mid].adress << endl
+						<< "\tТелефон:	" << Clients[mid].phone << endl << endl;
+					system("pause");
+					system("cls");
+					Menu();
+				}
+				return;
+			}
+			else if (Clients[mid].surname < _surname || Clients[mid].pred < _surname) {
+				left = mid + 1;
+			}
+			else {
+				right = mid - 1;
+			}
+		}
+		cout << "Клиент не найден\n\n" << endl;
+	}
+	else {
+		cout << "Нет клиентов\n\n";
+	}
+	system("pause");
+	system("cls");
+	Menu();
+}
+
 //--------------------------------------
 
 int main() {
@@ -501,24 +571,29 @@ int main() {
 		case 7:
 			system("cls");
 			cout << "Данные введены! \n" << endl;
-			writeToFile(Clients, ClientsCount);
+			binarySearchClient(Clients, ClientsCount);
 			break;
 		case 8:
 			system("cls");
 			cout << "Данные введены! \n" << endl;
-			readFromFile(Clients, ClientsCount);
+			writeToFile(Clients, ClientsCount);
 			break;
 		case 9:
 			system("cls");
 			cout << "Данные введены! \n" << endl;
-			deleteClients(Clients, ClientsCount);
+			readFromFile(Clients, ClientsCount);
 			break;
 		case 10:
 			system("cls");
 			cout << "Данные введены! \n" << endl;
-			deleteAllClients(Clients, ClientsCount);
+			deleteClients(Clients, ClientsCount);
 			break;
 		case 11:
+			system("cls");
+			cout << "Данные введены! \n" << endl;
+			deleteAllClients(Clients, ClientsCount);
+			break;
+		case 12:
 			system("cls");
 			cout << "Данные введены! \n" << endl;
 			sortClients(Clients, ClientsCount);
